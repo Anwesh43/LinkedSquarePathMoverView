@@ -161,4 +161,26 @@ class SquarePathMoverView(ctx : Context) : View(ctx) {
             curr.startUpdating(cb)
         }
     }
+
+    data class Renderer(var view : SquarePathMoverView) {
+
+        private val lspm : LinkedSPM = LinkedSPM(0)
+        private val animator : Animator = Animator(view)
+
+        fun render(canvas : Canvas, paint : Paint) {
+            canvas.drawColor(Color.parseColor("#212121"))
+            lspm?.draw(canvas, paint)
+            animator.animate {
+                lspm.update {i, scl ->
+                    animator.stop()
+                }
+            }
+        }
+
+        fun handleTap() {
+            lspm.startUpdating {
+                animator.start()
+            }
+        }
+    }
 }

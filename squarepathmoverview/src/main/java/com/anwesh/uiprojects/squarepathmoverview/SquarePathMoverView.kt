@@ -12,6 +12,7 @@ import android.graphics.Paint
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.RectF
+import android.util.Log
 
 val nodes : Int = 5
 
@@ -54,10 +55,11 @@ class SquarePathMoverView(ctx : Context) : View(ctx) {
 
         fun update(cb : (Float) -> Unit) {
             this.scale += 0.05f * this.dir
+            Log.d("scale is ", "$scale")
             if (Math.abs(this.scale - this.prevScale) > 1) {
                 this.scale = this.prevScale + this.dir
                 this.dir = 0f
-                this.dir = 1 - 2 * this.prevScale
+                this.prevScale = this.scale
                 cb(this.prevScale)
             }
         }
@@ -156,6 +158,7 @@ class SquarePathMoverView(ctx : Context) : View(ctx) {
                 curr = curr.getNext(dir) {
                     dir *= -1
                 }
+                Log.d("dir", "${dir}")
                 cb(i, scl)
             }
         }

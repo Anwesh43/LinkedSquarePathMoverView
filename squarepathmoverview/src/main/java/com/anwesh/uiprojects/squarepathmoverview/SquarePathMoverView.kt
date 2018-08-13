@@ -17,8 +17,8 @@ val nodes : Int = 5
 fun Canvas.drawSPMNode(i : Int, scale : Float, paint : Paint) {
     val w : Float = width.toFloat()
     val h : Float = height.toFloat()
-    val sc1 : Float = Math.min(0.5f, scale)
-    val sc2 : Float = Math.min(0.5f, scale)
+    val sc1 : Float = Math.min(0.5f, scale) * 2 
+    val sc2 : Float = Math.min(0.5f, Math.max(0f, scale - 0.5f)) * 2
     val gap : Float = w / nodes
     val size : Float = gap / 3
     val x1 = gap * sc2
@@ -92,6 +92,50 @@ class SquarePathMoverView(ctx : Context) : View(ctx) {
             if (animated) {
                 animated = false
             }
+        }
+    }
+
+    data class SPMNode(var i : Int, val state : State = State()) {
+
+        var next : SPMNode? = null
+        var prev : SPMNode? = null
+
+        fun update(cb : (Int, Float) -> Unit) {
+            this.state.update {
+                cb(i, it)
+            }
+        }
+
+        fun startUpdating(cb : () -> Unit) {
+            this.state.startUpdating(cb)
+        }
+
+        fun addNeighbor() {
+            if (i < nodes - 1) {
+                next = SPMNode(i + 1)
+                next?.prev = this
+            }
+        }
+
+        init {
+            addNeighbor()
+        }
+
+        fun draw(canvas : Canvas, paint : Paint) {
+            canvas.drawSPMNode(i, state.scale, paint)
+            next?.draw(canvas, paint)
+        }
+
+        fun getNext(dir : Int, cb : () -> Unit) : SPMNode {
+            var curr : SPMNode? = prev
+            if (dir == 1) {
+                curr = next
+            }
+            if (curr != null) {
+                return curr
+            }
+            cb()
+            return this
         }
     }
 }

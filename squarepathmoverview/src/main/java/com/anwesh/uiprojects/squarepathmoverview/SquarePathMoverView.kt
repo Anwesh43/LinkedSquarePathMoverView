@@ -4,6 +4,7 @@ package com.anwesh.uiprojects.squarepathmoverview
  * Created by anweshmishra on 14/08/18.
  */
 
+import android.app.Activity
 import android.view.View
 import android.view.MotionEvent
 import android.content.Context
@@ -183,6 +184,14 @@ class SquarePathMoverView(ctx : Context) : View(ctx) {
             lspm.startUpdating {
                 animator.start()
             }
+        }
+    }
+
+    companion object {
+        fun create(activity : Activity) : SquarePathMoverView {
+            val view : SquarePathMoverView = SquarePathMoverView(activity)
+            activity.setContentView(view)
+            return view
         }
     }
 }
